@@ -22,6 +22,7 @@ import oneflow as torch
 from diffusers import OneFlowStableDiffusionPipeline
 from pathlib import Path
 
+
 @click.command()
 @click.option("--token", help="auth token")
 @click.option("--repeat", default=32, help="")
@@ -41,6 +42,7 @@ def benchmark(token, repeat, output):
             images = pipe(prompt).images
             for i, image in enumerate(images):
                 image.save(f"output/{r}-{i}.png")
+
 
 if __name__ == "__main__":
     benchmark()
