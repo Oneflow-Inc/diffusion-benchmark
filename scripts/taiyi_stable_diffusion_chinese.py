@@ -36,11 +36,10 @@ def benchmark(token, repeat, output):
     pipe = pipe.to("cuda")
     Path(output).mkdir(parents=True, exist_ok=True)
     prompt = "飞流直下三千尺, 疑是银河落九天, 瀑布, 插画"
-    with torch.autocast("cuda"):
-        for r in range(repeat):
-            images = pipe(prompt).images
-            for i, image in enumerate(images):
-                image.save(f"output/{r}-{i}.png")
+    for r in range(repeat):
+        images = pipe(prompt).images
+        for i, image in enumerate(images):
+            image.save(f"output/{r}-{i}.png")
 
 
 if __name__ == "__main__":
