@@ -1,1 +1,1 @@
-docker build . -t diffusion-benchmark${DIFFUSION_BENCHMARK_IMAGE_SUFFIX} --build-arg BUILD_FROM_SOURCE=1
+docker build . -t diffusion-benchmark${DIFFUSION_BENCHMARK_IMAGE_SUFFIX} --build-arg BUILD_FROM_SOURCE=1 --build-arg CUDAARCHS=${DIFFUSION_BENCHMARK_CUDAARCHS}
