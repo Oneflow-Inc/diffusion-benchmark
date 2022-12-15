@@ -17,7 +17,7 @@ RUN if [ "$BUILD_FROM_SOURCE" == "0" ] ; then \
 
 # build oneflow from source
 # branch master
-ARG ONEFLOW_COMMIT_ID=e54cd6c17c67e77cca2d1cae5e27f26cd0938953
+ARG ONEFLOW_COMMIT_ID=1ae17a20f1e5a0aae2e8c638d42ea0bb157e2860
 ARG CUDAARCHS
 RUN if [ "$BUILD_FROM_SOURCE" == "1" ] ; then \
     git clone https://github.com/Oneflow-Inc/oneflow /oneflow \
@@ -33,7 +33,7 @@ ENV PYTHONPATH /oneflow/python
 
 # install diffusers
 # branch oneflow-fork
-ARG DIFFUSERS_COMMIT_ID=8c6abfe831e9e99f8f44ff657a1d41216c191fd8
+ARG DIFFUSERS_COMMIT_ID=b56a6d056e7a73de2dcc955a45fe1c886fd78638
 RUN git clone https://github.com/Oneflow-Inc/diffusers /diffusers && cd /diffusers && git checkout ${DIFFUSERS_COMMIT_ID}
 RUN cd /diffusers && python3 -m pip install -e .[oneflow]
 
