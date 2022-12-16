@@ -25,10 +25,11 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--token", help="auth token")
-@click.option("--repeat", default=32, help="")
-@click.option("--output", default="output", help="")
-def benchmark(token, repeat, output):
+@click.option("--token")
+@click.option("--prompt", default="飞流直下三千尺, 疑是银河落九天, 瀑布, 插画")
+@click.option("--repeat", default=32)
+@click.option("--output", default="output")
+def benchmark(token, prompt, repeat, output):
     pipe = OneFlowStableDiffusionPipeline.from_pretrained(
         "IDEA-CCNL/Taiyi-Stable-Diffusion-1B-Chinese-v0.1",
         use_auth_token=token,
@@ -36,7 +37,6 @@ def benchmark(token, repeat, output):
     )
     pipe = pipe.to("cuda")
     Path(output).mkdir(parents=True, exist_ok=True)
-    prompt = "飞流直下三千尺, 疑是银河落九天, 瀑布, 插画"
     for r in range(repeat):
         images = pipe(prompt).images
         for i, image in enumerate(images):

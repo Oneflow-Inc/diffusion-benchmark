@@ -29,12 +29,13 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--token", help="auth token")
-@click.option("--repeat", default=32, help="")
-@click.option("--output", default="output", help="")
-@click.option("--height", default=768, help="")
-@click.option("--width", default=768, help="")
-def benchmark(token, repeat, output, height, width):
+@click.option("--token")
+@click.option("--prompt", default="a photo of an astronaut riding a horse on mars")
+@click.option("--repeat", default=32)
+@click.option("--output", default="output")
+@click.option("--height", default=768)
+@click.option("--width", default=768)
+def benchmark(token, prompt, repeat, output, height, width):
     model_id = "stabilityai/stable-diffusion-2-1"
 
     pipe = StableDiffusionPipeline.from_pretrained(
@@ -44,7 +45,6 @@ def benchmark(token, repeat, output, height, width):
     pipe = pipe.to("cuda")
 
     Path(output).mkdir(parents=True, exist_ok=True)
-    prompt = "a photo of an astronaut riding a horse on mars"
     for r in range(repeat):
         images = pipe(prompt, height=height, width=width).images
         for i, image in enumerate(images):

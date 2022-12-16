@@ -25,10 +25,11 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--token", help="auth token")
-@click.option("--repeat", default=32, help="")
-@click.option("--output", default="output", help="")
-def benchmark(token, repeat, output):
+@click.option("--token")
+@click.option("--prompt", default="a photo of an astronaut riding a horse on mars")
+@click.option("--repeat", default=32)
+@click.option("--output", default="output")
+def benchmark(token, prompt, repeat, output):
     pipe = OneFlowStableDiffusionPipeline.from_pretrained(
         "runwayml/stable-diffusion-v1-5",
         use_auth_token=token,
@@ -37,7 +38,6 @@ def benchmark(token, repeat, output):
     )
     pipe = pipe.to("cuda")
     Path(output).mkdir(parents=True, exist_ok=True)
-    prompt = "a photo of an astronaut riding a horse on mars"
     with torch.autocast("cuda"):
         for r in range(repeat):
             images = pipe(prompt).images
