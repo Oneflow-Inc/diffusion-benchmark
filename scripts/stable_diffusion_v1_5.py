@@ -10,6 +10,7 @@ os.environ["ONEFLOW_MLIR_PREFER_NHWC"] = "1"
 os.environ["ONEFLOW_KERNEL_ENABLE_FUSED_CONV_BIAS"] = "1"
 os.environ["ONEFLOW_KERNEL_ENABLE_FUSED_LINEAR"] = "1"
 
+os.environ["ONEFLOW_KERENL_CONV_CUTLASS_IMPL_ENABLE_TUNING_WARMUP"] = "1"
 os.environ["ONEFLOW_KERENL_CONV_ENABLE_CUTLASS_IMPL"] = "1"
 os.environ["ONEFLOW_KERENL_FMHA_ENABLE_TRT_FLASH_ATTN_IMPL"] = "1"
 os.environ["ONEFLOW_KERNEL_GLU_ENABLE_DUAL_GEMM_IMPL"] = "1"
@@ -41,7 +42,7 @@ def benchmark(token, repeat, output):
         for r in range(repeat):
             images = pipe(prompt).images
             for i, image in enumerate(images):
-                image.save(f"output/{r}-{i}.png")
+                image.save(f"{output}/stable_diffusion_v1_5-{r:03d}-{i:02d}.png")
 
 
 if __name__ == "__main__":
