@@ -6,21 +6,6 @@ FROM ${BASE_DOCKER_IMAGE}
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y libopenblas-dev nasm autoconf libtool google-perftools
 RUN  python3 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-# runtime knobs
-ENV ONEFLOW_MLIR_CSE 1
-ENV ONEFLOW_MLIR_ENABLE_INFERENCE_OPTIMIZATION 1
-ENV ONEFLOW_MLIR_ENABLE_ROUND_TRIP 1
-ENV ONEFLOW_MLIR_FUSE_FORWARD_OPS 1
-ENV ONEFLOW_MLIR_GROUP_MATMUL 1
-ENV ONEFLOW_MLIR_PREFER_NHWC 1
-ENV ONEFLOW_KERNEL_ENABLE_FUSED_CONV_BIAS 1
-ENV ONEFLOW_KERNEL_ENABLE_FUSED_LINEAR 1
-ENV ONEFLOW_KERENL_CONV_ENABLE_CUTLASS_IMPL 1
-ENV ONEFLOW_KERENL_FMHA_ENABLE_TRT_FLASH_ATTN_IMPL 1
-ENV ONEFLOW_KERNEL_GLU_ENABLE_DUAL_GEMM_IMPL 1
-ENV ONEFLOW_CONV_ALLOW_HALF_PRECISION_ACCUMULATION 1
-ENV ONEFLOW_MATMUL_ALLOW_HALF_PRECISION_ACCUMULATION 1
-
 ARG BUILD_FROM_SOURCE=1
 
 # install oneflow with pip
@@ -32,7 +17,7 @@ RUN if [ "$BUILD_FROM_SOURCE" == "0" ] ; then \
 
 # build oneflow from source
 # branch master
-ARG ONEFLOW_COMMIT_ID=44e3d04982f379a4b513114c12fbf6094f80d901
+ARG ONEFLOW_COMMIT_ID=cc1d1ab3c9c43ac5b474a56a629b96d69053dd9a
 ARG CUDAARCHS
 RUN if [ "$BUILD_FROM_SOURCE" == "1" ] ; then \
     git clone https://github.com/Oneflow-Inc/oneflow /oneflow \
@@ -48,7 +33,7 @@ ENV PYTHONPATH /oneflow/python
 
 # install diffusers
 # branch oneflow-fork
-ARG DIFFUSERS_COMMIT_ID=8c6abfe831e9e99f8f44ff657a1d41216c191fd8
+ARG DIFFUSERS_COMMIT_ID=4b210175d98167d957f4e53b537b5165c130a4b6
 RUN git clone https://github.com/Oneflow-Inc/diffusers /diffusers && cd /diffusers && git checkout ${DIFFUSERS_COMMIT_ID}
 RUN cd /diffusers && python3 -m pip install -e .[oneflow]
 
@@ -62,4 +47,3 @@ ADD scripts /scripts
 WORKDIR /scripts
 
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libtcmalloc.so.4
-

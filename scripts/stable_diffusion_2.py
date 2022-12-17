@@ -10,6 +10,7 @@ os.environ["ONEFLOW_MLIR_PREFER_NHWC"] = "1"
 os.environ["ONEFLOW_KERNEL_ENABLE_FUSED_CONV_BIAS"] = "1"
 os.environ["ONEFLOW_KERNEL_ENABLE_FUSED_LINEAR"] = "1"
 
+os.environ["ONEFLOW_KERENL_CONV_CUTLASS_IMPL_ENABLE_TUNING_WARMUP"] = "1"
 os.environ["ONEFLOW_KERENL_CONV_ENABLE_CUTLASS_IMPL"] = "1"
 os.environ["ONEFLOW_KERENL_FMHA_ENABLE_TRT_FLASH_ATTN_IMPL"] = "1"
 os.environ["ONEFLOW_KERNEL_GLU_ENABLE_DUAL_GEMM_IMPL"] = "1"
@@ -28,12 +29,13 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--token", help="auth token")
-@click.option("--repeat", default=32, help="")
-@click.option("--output", default="output", help="")
-@click.option("--height", default=768, help="")
-@click.option("--width", default=768, help="")
-def benchmark(token, repeat, output, height, width):
+@click.option("--token")
+@click.option("--prompt", default="a photo of an astronaut riding a horse on mars")
+@click.option("--repeat", default=32)
+@click.option("--output", default="output")
+@click.option("--height", default=768)
+@click.option("--width", default=768)
+def benchmark(token, prompt, repeat, output, height, width):
     model_id = "stabilityai/stable-diffusion-2"
 
     scheduler = EulerDiscreteScheduler.from_pretrained(model_id, subfolder="scheduler")
@@ -43,11 +45,10 @@ def benchmark(token, repeat, output, height, width):
     pipe = pipe.to("cuda")
 
     Path(output).mkdir(parents=True, exist_ok=True)
-    prompt = "a photo of an astronaut riding a horse on mars"
     for r in range(repeat):
         images = pipe(prompt, height=height, width=width).images
         for i, image in enumerate(images):
-            image.save(f"output/{r}-{i}.png")
+            image.save(f"{output}/stable_diffusion_2-{r:03d}-{i:02d}.png")
 
 
 if __name__ == "__main__":
