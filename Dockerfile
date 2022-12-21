@@ -17,7 +17,7 @@ RUN if [ "$BUILD_FROM_SOURCE" == "0" ] ; then \
 
 # build oneflow from source
 # branch master
-ARG ONEFLOW_COMMIT_ID=cc1d1ab3c9c43ac5b474a56a629b96d69053dd9a
+ARG ONEFLOW_COMMIT_ID=2e7dfb48e053cb88de3330a64e04ad7e0009b0a8
 ARG CUDAARCHS
 RUN if [ "$BUILD_FROM_SOURCE" == "1" ] ; then \
     git clone https://github.com/Oneflow-Inc/oneflow /oneflow \
@@ -33,7 +33,7 @@ ENV PYTHONPATH /oneflow/python
 
 # install diffusers
 # branch oneflow-fork
-ARG DIFFUSERS_COMMIT_ID=4b210175d98167d957f4e53b537b5165c130a4b6
+ARG DIFFUSERS_COMMIT_ID=eac1e38053535ba2eeddaf3cba6c468ed93c5357
 RUN git clone https://github.com/Oneflow-Inc/diffusers /diffusers && cd /diffusers && git checkout ${DIFFUSERS_COMMIT_ID}
 RUN cd /diffusers && python3 -m pip install -e .[oneflow]
 
@@ -44,6 +44,7 @@ RUN git clone https://github.com/Oneflow-Inc/transformers /transformers && cd /t
 RUN cd /transformers && python3 -m pip install -e .
 
 ADD scripts /scripts
+RUN python3 -m pip install -r /scripts/requirements.txt
 WORKDIR /scripts
 
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libtcmalloc.so.4
