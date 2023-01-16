@@ -20,7 +20,7 @@ os.environ["ONEFLOW_MATMUL_ALLOW_HALF_PRECISION_ACCUMULATION"] = "1"
 
 import click
 import oneflow as torch
-from diffusers import OneFlowStableDiffusionPipeline
+from diffusers import OneFlowStableDiffusionPipeline as StableDiffusionPipeline
 from pathlib import Path
 
 
@@ -30,19 +30,19 @@ from pathlib import Path
 @click.option("--repeat", default=32)
 @click.option("--output", default="output")
 def benchmark(token, prompt, repeat, output):
-    pipe = OneFlowStableDiffusionPipeline.from_pretrained(
+    pipe = StableDiffusionPipeline.from_pretrained(
         "runwayml/stable-diffusion-v1-5",
         use_auth_token=token,
         revision="fp16",
         torch_dtype=torch.float16,
     )
     pipe = pipe.to("cuda")
-    Path(output).mkdir(parents=True, exist_ok=True)
-    with torch.autocast("cuda"):
-        for r in range(repeat):
-            images = pipe(prompt).images
-            for i, image in enumerate(images):
-                image.save(f"{output}/stable_diffusion_v1_5-{r:03d}-{i:02d}.png")
+    output_dir = Path(output).joinpath("stable_diffusion_v1_5")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for r in range(repeat):
+        images = pipe(prompt).images
+        for i, image in enumerate(images):
+            image.save(output_dir.joinpath(f"{r:03d}-{i:02d}.png"))
 
 
 if __name__ == "__main__":

@@ -29,6 +29,7 @@ from diffusers import (
     OneFlowStableDiffusionInpaintPipeline as StableDiffusionInpaintPipeline,
 )
 
+
 @click.command()
 @click.option("--token")
 @click.option(
@@ -53,12 +54,12 @@ def benchmark(token, prompt, image, mask, repeat, output):
         torch_dtype=torch.float16,
     )
     pipe = pipe.to("cuda")
-    Path(output).mkdir(parents=True, exist_ok=True)
-    with torch.autocast("cuda"):
-        for r in range(repeat):
-            images = pipe(prompt, image=init_image, mask_image=mask_image).images
-            for i, image in enumerate(images):
-                image.save(f"{output}/stable_diffusion_inpainting-{r:03d}-{i:02d}.png")
+    output_dir = Path(output).joinpath("stable_diffusion_inpainting")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for r in range(repeat):
+        images = pipe(prompt, image=init_image, mask_image=mask_image).images
+        for i, image in enumerate(images):
+            image.save(output_dir.joinpath(f"{r:03d}-{i:02d}.png"))
 
 
 if __name__ == "__main__":
