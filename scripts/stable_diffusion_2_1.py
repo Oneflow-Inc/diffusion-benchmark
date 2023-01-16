@@ -44,11 +44,12 @@ def benchmark(token, prompt, repeat, output, height, width):
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
     pipe = pipe.to("cuda")
 
-    Path(output).mkdir(parents=True, exist_ok=True)
+    output_dir = Path(output).joinpath("stable_diffusion_2_1")
+    output_dir.mkdir(parents=True, exist_ok=True)
     for r in range(repeat):
         images = pipe(prompt, height=height, width=width).images
         for i, image in enumerate(images):
-            image.save(f"{output}/stable_diffusion_2_1-{r:03d}-{i:02d}.png")
+            image.save(output_dir.joinpath(f"{r:03d}-{i:02d}.png"))
 
 
 if __name__ == "__main__":
