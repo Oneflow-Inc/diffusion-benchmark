@@ -18,7 +18,7 @@ RUN if [ "$BUILD_FROM_SOURCE" == "0" ] ; then \
 # build oneflow from source
 # branch master
 ARG ONEFLOW_GIT_URL=https://github.com/Oneflow-Inc/oneflow.git
-ARG ONEFLOW_COMMIT_ID=1e1bddf2ef23a9e3492f72f125d248b84d57ab69
+ARG ONEFLOW_COMMIT_ID=7f6122c767abb72e588151c7aeeb69e35ceaff40
 ARG CUDAARCHS
 RUN if [ "$BUILD_FROM_SOURCE" == "1" ] ; then \
     git clone ${ONEFLOW_GIT_URL} /oneflow \
