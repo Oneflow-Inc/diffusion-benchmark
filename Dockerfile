@@ -32,19 +32,14 @@ RUN if [ "$BUILD_FROM_SOURCE" == "1" ] ; then \
     fi;
 ENV PYTHONPATH /oneflow/python
 
+RUN python3 -m pip install transformers==4.26
+
 # install diffusers
 # branch oneflow-fork
 ARG DIFFUSERS_GIT_URL=https://github.com/Oneflow-Inc/diffusers.git
-ARG DIFFUSERS_COMMIT_ID=d53868a3c882abe6feb2c1fac9954128a638fd28
+ARG DIFFUSERS_COMMIT_ID=45bd0c03c5010654184b8e006dbd1f52f4a863ae
 RUN git clone ${DIFFUSERS_GIT_URL} /diffusers && cd /diffusers && git checkout ${DIFFUSERS_COMMIT_ID}
 RUN cd /diffusers && python3 -m pip install -e .[oneflow]
-
-# install transformers
-# branch oneflow-fork
-ARG TRANSFORMERS_GIT_URL=https://github.com/Oneflow-Inc/transformers.git
-ARG TRANSFORMERS_COMMIT_ID=4e235cd3282d0afa920b3759ac959e35a94fc3ce
-RUN git clone ${TRANSFORMERS_GIT_URL} /transformers && cd /transformers && git checkout ${TRANSFORMERS_COMMIT_ID}
-RUN cd /transformers && python3 -m pip install -e .
 
 ADD scripts /scripts
 RUN python3 -m pip install -r /scripts/requirements.txt
