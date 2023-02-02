@@ -54,7 +54,6 @@ pipe.enable_graph_share_mem()
 if args.save:
     pipe.enable_save_graph()
 if args.load:
-    pipe.enable_load_graph()
     pipe.load_graph(args.cache)
 
 
