@@ -10,18 +10,19 @@ def parse_args():
     parser.add_argument(
         "--prompt", type=str, default="a photo of an astronaut riding a horse on mars"
     )
-    parser.add_argument("--cached", type=str, default="./oneflow_saved_pipe")
+    parser.add_argument("--cache", type=str, default="./oneflow-sd/graph_cache")
+    parser.add_argument("--model", type=str, default=".//oneflow-sd/model")
     parser.add_argument(
         "--load",
         default=False,
         action="store_true",
-        help="If specified, load from cached",
+        help="If specified, load from cache",
     )
     parser.add_argument(
         "--save",
         default=False,
         action="store_true",
-        help="If specified, save to cached",
+        help="If specified, save to cache",
     )
     args = parser.parse_args()
     return args
@@ -32,8 +33,8 @@ args = parse_args()
 model = "CompVis/stable-diffusion-v1-4"
 if args.load:
     # Note: restore the cache by setting the pretrain path to a cache path
-    model = args.cached
-    print(f"will load pipe from: {args.cached}")
+    model = args.model
+    print(f"will load pipe from: {args.cache}")
 pipe = OneFlowStableDiffusionPipeline.from_pretrained(
     model,
     use_auth_token=True,
@@ -43,6 +44,8 @@ pipe = OneFlowStableDiffusionPipeline.from_pretrained(
 )
 
 pipe = pipe.to("cuda")
+if args.load:
+    pipe.load_graph(args.cache)
 
 output_dir = "oneflow-sd-output"
 os.makedirs(output_dir, exist_ok=True)
@@ -73,7 +76,7 @@ for n in range(2):
     do_infer(n)
 if args.save:
     # Note: graph cache will be saved with the weight
-    print(f"start saving pipe to: {args.cached}")
-    os.makedirs(args.cached, exist_ok=True)
-    pipe.save_pretrained(args.cached)
-    pipe.save_graph(args.cached)
+    print(f"start saving pipe to: {args.cache}")
+    os.makedirs(args.cache, exist_ok=True)
+    pipe.save_pretrained(args.cache)
+    pipe.save_graph(args.cache)
