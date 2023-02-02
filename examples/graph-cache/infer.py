@@ -50,7 +50,7 @@ os.makedirs(output_dir, exist_ok=True)
 
 pipe.set_unet_graphs_cache_size(10)
 pipe.enable_graph_share_mem()
-# Note: enable saving/loading graph-related cache, these APIs are tricky and might be removed
+# Note: enable saving/loading graph-related cache, these APIs are tricky and might be changed
 if args.save:
     pipe.enable_save_graph()
 if args.load:
