@@ -50,10 +50,13 @@ if args.load:
 output_dir = "oneflow-sd-output"
 os.makedirs(output_dir, exist_ok=True)
 
-# Note: enable graph-related cache
 pipe.set_unet_graphs_cache_size(10)
 pipe.enable_graph_share_mem()
-pipe.enable_save_graph()
+# Note: enable saving/loading graph-related cache, these APIs are tricky and might be removed
+if args.save:
+    pipe.enable_save_graph()
+if args.load:
+    pipe.enable_load_graph()
 
 
 def do_infer(n):
