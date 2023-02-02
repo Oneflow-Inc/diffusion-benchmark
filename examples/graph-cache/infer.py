@@ -46,8 +46,6 @@ pipe = pipe.to("cuda")
 
 output_dir = "oneflow-sd-output"
 os.makedirs(output_dir, exist_ok=True)
-if args.save:
-    os.makedirs(args.cached, exist_ok=True)
 
 # Note: enable graph-related cache
 pipe.set_unet_graphs_cache_size(10)
@@ -76,4 +74,6 @@ for n in range(2):
 if args.save:
     # Note: graph cache will be saved with the weight
     print(f"start saving pipe to: {args.cached}")
+    os.makedirs(args.cached, exist_ok=True)
     pipe.save_pretrained(args.cached)
+    pipe.save_graph(args.cached)
