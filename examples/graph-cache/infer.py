@@ -75,8 +75,8 @@ def do_infer(n):
 for n in range(2):
     do_infer(n)
 if args.save:
-    # Note: graph cache will be saved with the weight
     print(f"start saving pipe to: {args.cache}")
     os.makedirs(args.cache, exist_ok=True)
     pipe.save_pretrained(args.cache)
+    # Note: save graph cache
     pipe.save_graph(args.cache)
