@@ -76,8 +76,8 @@ def do_infer(n):
 for n in range(2):
     do_infer(n)
 if args.save:
-    print(f"start saving pipe to: {args.cache}")
-    os.makedirs(args.cache, exist_ok=True)
     pipe.save_pretrained(args.model)
+    print(f"saving cache to: {args.cache}")
+    os.makedirs(args.cache, exist_ok=True)
     # Note: save graph cache
     pipe.save_graph(args.cache)
