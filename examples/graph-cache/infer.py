@@ -11,7 +11,7 @@ def parse_args():
         "--prompt", type=str, default="a photo of an astronaut riding a horse on mars"
     )
     parser.add_argument("--cache", type=str, default="./oneflow-sd/graph_cache")
-    parser.add_argument("--model", type=str, default=".//oneflow-sd/model")
+    parser.add_argument("--model", type=str, default="./oneflow-sd/model")
     parser.add_argument(
         "--load",
         default=False,
@@ -44,8 +44,6 @@ pipe = OneFlowStableDiffusionPipeline.from_pretrained(
 )
 
 pipe = pipe.to("cuda")
-if args.load:
-    pipe.load_graph(args.cache)
 
 output_dir = "oneflow-sd-output"
 os.makedirs(output_dir, exist_ok=True)
@@ -57,6 +55,7 @@ if args.save:
     pipe.enable_save_graph()
 if args.load:
     pipe.enable_load_graph()
+    pipe.load_graph(args.cache)
 
 
 def do_infer(n):
