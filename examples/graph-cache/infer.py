@@ -79,6 +79,6 @@ for n in range(2):
 if args.save:
     print(f"start saving pipe to: {args.cache}")
     os.makedirs(args.cache, exist_ok=True)
-    pipe.save_pretrained(args.cache)
+    pipe.save_pretrained(args.model)
     # Note: save graph cache
     pipe.save_graph(args.cache)
