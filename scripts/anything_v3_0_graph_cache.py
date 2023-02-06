@@ -34,10 +34,13 @@ DEFAULT_NEGATIVE_PROMPT = "lowres, bad anatomy, bad hands, text, error, missing 
 @click.option("--prompt", default=DEFAULT_PROMPT)
 @click.option("--negative_prompt", default=DEFAULT_NEGATIVE_PROMPT)
 @click.option("--guidance_scale", default=12)
-@click.option("--repeat", default=32)
+@click.option("--repeat", default=8)
 @click.option("--output", default="output")
-@click.option("--height", default=640)
-@click.option("--width", default=512)
+@click.option("--min_height", default=512)
+@click.option("--min_width", default=512)
+@click.option("--max_height", default=768)
+@click.option("--max_width", default=768)
+@click.option("--size_step", default=128)
 @click.option("--num_inference_steps", default=50)
 def benchmark(
     token,
@@ -46,29 +49,42 @@ def benchmark(
     guidance_scale,
     repeat,
     output,
-    height,
-    width,
+    min_height,
+    min_width,
+    max_height,
+    max_width,
+    size_step,
     num_inference_steps,
 ):
     model_id = "Linaqruf/anything-v3.0"
+    sizes = [
+        (height, width)
+        for height in range(min_height, max_height + 1, size_step)
+        for width in range(min_width, max_width + 1, size_step)
+    ]
+
+    sizes.reverse()
 
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
+    pipe.set_graph_compile_cache_size(len(sizes))
+    pipe.enable_graph_share_mem()
     pipe = pipe.to("cuda")
 
-    output_dir = Path(output).joinpath("anything_v3_0")
+    output_dir = Path(output).joinpath("anything_v3_0_graph_cache")
     output_dir.mkdir(parents=True, exist_ok=True)
     for r in range(repeat):
-        images = pipe(
-            prompt,
-            negative_prompt=negative_prompt,
-            height=height,
-            width=width,
-            guidance_scale=guidance_scale,
-            num_inference_steps=num_inference_steps,
-        ).images
-        for i, image in enumerate(images):
-            image.save(output_dir.joinpath(f"{r:03d}-{i:02d}.png"))
+        for height, width in sizes:
+            images = pipe(
+                prompt,
+                negative_prompt=negative_prompt,
+                height=height,
+                width=width,
+                guidance_scale=guidance_scale,
+                num_inference_steps=num_inference_steps,
+            ).images
+            for i, image in enumerate(images):
+                image.save(output_dir.joinpath(f"{width}x{height}-{r:03d}-{i:02d}.png"))
 
 
 if __name__ == "__main__":
